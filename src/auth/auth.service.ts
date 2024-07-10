@@ -5,6 +5,7 @@ import { Model } from 'mongoose';
 import * as bcrypt from 'bcryptjs'
 import { JwtService } from '@nestjs/jwt';
 import { signUpDto } from './dto/signUp.dto';
+import { logInDto } from './dto/logIn.dto';
 @Injectable()
 export class AuthService {
     constructor(
@@ -25,8 +26,33 @@ export class AuthService {
             password : hashedPassword
         })
         const token =  this.jwtService.sign({id : user._id}) // passing the id (payload) of the user to the jwt token
+        console.log("SignUp Successfull")
         return { token }
 
+
+    }
+
+    async logIn(logInDto : logInDto) : Promise<{ token : string}> {
+        
+        const {email , password} = logInDto;
+
+        const user = await this.userModel.findOne({
+            email
+        })
+
+        if(!user) {
+            throw new Error('Invalid credentials')
+        }
+
+        const comparePassword = await bcrypt.compare(password , user.password);
+
+        if(!comparePassword) {
+            throw new Error('Invalid credentials')
+        }
+
+        const token =  this.jwtService.sign({id : user._id}) // passing the id (payload) of the user to the jwt token
+        console.log("Login Successful")
+        return { token }
 
     }
 }
