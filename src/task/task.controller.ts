@@ -18,7 +18,7 @@ export class TaskController {
     
     @UseGuards(JwtAuthGuard)
     async get(@Req() req) {
-        return await this.taskService.getTasks();
+        return await this.taskService.getTasks(req.user._id);
     }
     
     @Patch('/:taskId')

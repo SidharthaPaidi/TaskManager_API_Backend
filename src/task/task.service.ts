@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Req } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Task, TaskSchema } from './task.schema';
 import { Model } from 'mongoose';
@@ -20,8 +20,8 @@ export class TaskService {
     }
 
     // getTasks method to get all the tasks
-    async getTasks() {
-        const tasks = await this.taskModel.find();
+    async getTasks(@Req() req) {
+        const tasks = await this.taskModel.find({user: req.user._id});
         return tasks;
     }
 
