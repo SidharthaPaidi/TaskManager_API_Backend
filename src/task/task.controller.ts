@@ -1,6 +1,7 @@
 import { Controller, Post, UseGuards, Patch, Body, Param, Req } from '@nestjs/common';
 import { TaskService } from './task.service';
 import { JwtAuthGuard } from 'src/auth/auth.guard';
+import { CreateTaskDto } from './task.dto';
 
 
 @Controller('task')
@@ -10,8 +11,9 @@ export class TaskController {
 
     @Post()
     @UseGuards(JwtAuthGuard)
-    async create(@Body('name') taskName: string, @Req() req) {
-        return await this.taskService.createTask(taskName, req.user);
+    async create(@Body() createTaskDto: CreateTaskDto, @Req() req) {
+        const userId = req.user._id; // Get user ID from request
+        return this.taskService.create({ ...createTaskDto, user: userId });
     }
     
     @UseGuards(JwtAuthGuard)

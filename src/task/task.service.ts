@@ -3,6 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Task, TaskSchema } from './task.schema';
 import { Model } from 'mongoose';
 import { User } from '../auth/schemas/user.schema';
+import { CreateTaskDto } from './task.dto';
 
 @Injectable()
 export class TaskService {
@@ -12,11 +13,10 @@ export class TaskService {
     ) { }
 
     // createTask method to create a new task
-    async createTask(name: string, user: User) {
-        const newTask = new this.taskModel({ name: name, user: user._id, completed: false });
-        const result = await newTask.save();
-        console.log(result);
-        return result;
+    async create(createTaskDto: CreateTaskDto): Promise<Task> {
+        const newTask = new this.taskModel(createTaskDto);
+        console.log(newTask);
+        return newTask.save();
     }
 
     // getTasks method to get all the tasks
