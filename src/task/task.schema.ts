@@ -14,10 +14,10 @@ export class Task extends Document {
     user: mongoose.Types.ObjectId;
 
     @Prop({ required: true })
-    title: string;
+    name: string;
 
     @Prop({ default: false})
-    status: boolean;
+    completed: boolean;
 }
 
 export const TaskSchema = SchemaFactory.createForClass(Task);

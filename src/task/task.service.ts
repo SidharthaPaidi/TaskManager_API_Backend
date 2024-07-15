@@ -12,8 +12,8 @@ export class TaskService {
     ) { }
 
     // createTask method to create a new task
-    async createTask(title: string, user: User) {
-        const newTask = new this.taskModel({ title: title, user: user._id, status: false });
+    async createTask(name: string, user: User) {
+        const newTask = new this.taskModel({ name: name, user: user._id, completed: false });
         const result = await newTask.save();
         console.log(result);
         return result;
@@ -25,27 +25,14 @@ export class TaskService {
         return tasks;
     }
 
-    // getTaskById method to get a task by its id
-    async getTaskById(id: string) {
-        const task = await this.taskModel.findById(id);
-        return task;
+    // Add this method
+    async updateTaskById(taskId: string, updatePayload: any): Promise<any> {
+        const updatedTask = await this.taskModel.findByIdAndUpdate(taskId, updatePayload, { new: true });
+        updatedTask.completed = true;
+        console.log(updatedTask);
+        return updatedTask;
     }
 
-    // updateTask method to update a task by its id
-    async updateTask(id: string, title: string, status: boolean) {
-        const task = await this.taskModel.findById(id);
-        task.title = title;
-        task.status = status;
-        const result = await task.save();
-        return result;
-    }
 
-    // deleteTask method to delete a task by its id
-    async deleteTask(id: string) {
-        const result = await this.taskModel.deleteOne({
-            _id:
-                id
-        });
-    }
 
 }
