@@ -14,23 +14,31 @@ export class TaskService {
 
     // createTask method to create a new task
     async create(createTaskDto: CreateTaskDto): Promise<Task> {
+        console.log(createTaskDto);
         const newTask = new this.taskModel(createTaskDto);
         console.log(newTask);
         return newTask.save();
     }
 
     // getTasks method to get all the tasks
-    async getTasks(@Req() req) {
-        const tasks = await this.taskModel.find({user: req.user._id});
-        return tasks;
+    async getTasks(user : User) {
+        const tasks = await this.taskModel.find({ user : user._id });
+        const res = new Object({ tasks: tasks });
+        return res;
     }
 
     // Add this method
     async updateTaskById(taskId: string, updatePayload: any): Promise<any> {
-        const updatedTask = await this.taskModel.findByIdAndUpdate(taskId, updatePayload, { new: true });
-        updatedTask.completed = true;
+        const task = await this.taskModel.findById(taskId);
+        const updatedTask = await this.taskModel.findByIdAndUpdate(taskId, { $set: { completed: !task.completed } }, { new: true });
         console.log(updatedTask);
         return updatedTask;
+    }
+
+    // Add this method
+    async deleteTaskById(taskId: string): Promise<any> {
+        const deletedTask = await this.taskModel.findByIdAndDelete(taskId);
+        return deletedTask;
     }
 
 

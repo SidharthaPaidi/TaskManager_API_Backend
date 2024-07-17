@@ -1,4 +1,4 @@
-import { Controller, Post, UseGuards, Patch, Body, Param, Req } from '@nestjs/common';
+import { Controller, Post, UseGuards, Patch, Body, Param, Req, Get, Delete } from '@nestjs/common';
 import { TaskService } from './task.service';
 import { JwtAuthGuard } from 'src/auth/auth.guard';
 import { CreateTaskDto } from './task.dto';
@@ -12,13 +12,15 @@ export class TaskController {
     @Post()
     @UseGuards(JwtAuthGuard)
     async create(@Body() createTaskDto: CreateTaskDto, @Req() req) {
-        const userId = req.user._id; // Get user ID from request
-        return this.taskService.create({ ...createTaskDto, user: userId });
+        const user = req.user;
+        console.log('User:', user);
+        return this.taskService.create({ ...createTaskDto, user: user._id });
     }
     
+    @Get()
     @UseGuards(JwtAuthGuard)
     async get(@Req() req) {
-        return await this.taskService.getTasks(req.user._id);
+        return await this.taskService.getTasks(req.user);
     }
     
     @Patch('/:taskId')
@@ -27,6 +29,11 @@ export class TaskController {
         return await this.taskService.updateTaskById(taskId, updatePayload);
     }
 
+    @Delete('/:taskId')
+    @UseGuards(JwtAuthGuard)
+    async deleteTaskById(@Param('taskId') taskId: string) {
+        return await this.taskService.deleteTaskById(taskId);
+    }
 
 
 }

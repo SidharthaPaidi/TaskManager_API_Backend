@@ -7,16 +7,17 @@ import { User } from "../auth/schemas/user.schema";
 
 @Schema({
     timestamps: true,
-}) 
+})
 export class Task extends Document {
 
-    @Prop({ type: mongoose.Schema.Types.ObjectId, ref: () => User  })
+    @Prop({ type: mongoose.Schema.Types.ObjectId, ref: () => User })
     user: mongoose.Types.ObjectId;
+
 
     @Prop({ required: true })
     name: string;
 
-    @Prop({ default: false})
+    @Prop({ default: false })
     completed: boolean;
 }
 
